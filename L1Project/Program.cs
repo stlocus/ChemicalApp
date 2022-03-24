@@ -22,47 +22,42 @@ namespace ChemicalApp
                 "3. Chlorine\n" +
                 "4. Bleach\n");
 
-            decimal sumEfficiency;
+            Console.WriteLine("Enter chemical number.");
+            chemicalName.Add(Convert.ToInt32(Console.ReadLine()));
 
+            decimal sumEfficiency = 0;
+            
+            
             for (int testCount = 1; testCount < 6; testCount++)
             {
                 Console.WriteLine($"-------- Test {testCount} --------\n");
-                
-                Console.WriteLine("Enter chemical number.");
-                chemicalName.Add(Convert.ToInt32(Console.ReadLine()));
-
-                Console.WriteLine("Enter germ count.");
-
-                int startGermCount = Convert.ToInt32(Console.ReadLine());
 
                 Random rndm = new Random();
 
-                int endGermCount = rndm.Next(0, 150);
+                int startGermCount = rndm.Next(1, 150);
 
-                decimal chemicalEfficiency = (startGermCount - endGermCount) / 30;
+                Console.WriteLine($"Press <ENTER> to initiate test {testCount}.\n" +
+                    $"-----------------------------------------");
+
+                Console.ReadLine();
+                
+                int endGermCount = rndm.Next(0, startGermCount);
+
+                decimal chemicalEfficiency = (decimal)(startGermCount - endGermCount) / 30;
 
                 chemicalEfficiency = Math.Round(chemicalEfficiency, 3);
+
+                Console.WriteLine($"Chemical Efficiency " +
+                    $"for test {testCount}: {chemicalEfficiency}");
+
+                sumEfficiency += chemicalEfficiency;
+
             }
 
+            decimal finalEfficientRating = sumEfficiency / 5;
+            finalEfficientRating = Math.Round(finalEfficientRating, 3);
 
-            
-                
-            
-                
-            
-            
-
-
-
-
-
-
-
-
-
-
-
-
+            Console.WriteLine($"The final efficiency rating is {finalEfficientRating}");
         }
 
 
@@ -88,6 +83,7 @@ namespace ChemicalApp
                 if(userChoice.Equals("")) 
                 {
                     ChemicalChoice();
+                    Console.WriteLine("");
                 }
                 else if(userChoice.Equals("stop"))
                 {
