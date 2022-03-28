@@ -7,7 +7,8 @@ namespace ChemicalApp
     class Program
     {
         // Global variables
-        static List<int> chemicalName = new List<int>();
+        static readonly List<string> CHEMICALNAMES = new List<string>() {"Hand Sanitiser", "Household Spray", "Chlorine", "Bleach"};
+        static List<int> chosenChemicals = new List<int>();
         // Methods
 
         // Tests the effiency of a chemical
@@ -17,20 +18,21 @@ namespace ChemicalApp
             Console.WriteLine("----------------------------------------------------\n" +
                 "Welcome to the chemical testing area. Please make a choice.\n" +
                 "----------------------------------------------------\n" +
-                "1. Hand Sanitiser\n" +
-                "2. Household Spray\n" +
-                "3. Chlorine\n" +
-                "4. Bleach\n");
+                $"1. {CHEMICALNAMES[0]}\n" +
+                $"2. {CHEMICALNAMES[1]}\n" +
+                $"3. {CHEMICALNAMES[2]}\n" +
+                $"4. {CHEMICALNAMES[3]}\n");
 
             Console.WriteLine("Enter chemical number.");
-            chemicalName.Add(Convert.ToInt32(Console.ReadLine()));
+            chosenChemicals.Add(Convert.ToInt32(Console.ReadLine())-1);
 
             decimal sumEfficiency = 0;
             
             
             for (int testCount = 1; testCount < 6; testCount++)
             {
-                Console.WriteLine($"-------- Test {testCount} --------\n");
+                // Displaying the name of the most recently added chemical from our chosen chemical list
+                Console.WriteLine($"-------- Test {testCount} : {CHEMICALNAMES[chosenChemicals[chosenChemicals.Count-1]]} --------\n");
 
                 Random rndm = new Random();
 
@@ -57,7 +59,8 @@ namespace ChemicalApp
             decimal finalEfficientRating = sumEfficiency / 5;
             finalEfficientRating = Math.Round(finalEfficientRating, 3);
 
-            Console.WriteLine($"The final efficiency rating is {finalEfficientRating}");
+            Console.WriteLine($"The final efficiency rating for {CHEMICALNAMES[chosenChemicals[chosenChemicals.Count-1]]} is {finalEfficientRating}");
+
         }
 
 
