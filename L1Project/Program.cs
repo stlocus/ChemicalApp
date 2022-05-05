@@ -1,6 +1,7 @@
 ﻿// Imports
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace ChemicalApp
 {
@@ -9,57 +10,160 @@ namespace ChemicalApp
         // Global variables
         static readonly List<string> CHEMICALNAMES = new List<string>() {"Hand Sanitiser", "Household Spray", "Chlorine", "Bleach"};
         static List<int> chosenChemicals = new List<int>();
+        static List<decimal> chemicalEfficiencies = new List<decimal>();
         // Methods
 
-        // Tests the effiency of a chemical
-        // Component 2
-        static void ChemicalChoice()
+        // sort chemcial efficiencies in a ascending order
+        static void EfficiencySortAsc()
         {
-            Console.WriteLine("----------------------------------------------------\n" +
+            for (int leftPointer = 0; leftPointer < chemicalEfficiencies.Count-1; leftPointer++)
+            {
+                for (int rightPointer = leftPointer+1; rightPointer < chemicalEfficiencies.Count; rightPointer++)
+                {
+                    if (chemicalEfficiencies[leftPointer] > chemicalEfficiencies[rightPointer])
+                    {
+                        decimal tempEfficiency = chemicalEfficiencies[leftPointer];
+                        chemicalEfficiencies[leftPointer] = chemicalEfficiencies[rightPointer];
+                        chemicalEfficiencies[rightPointer] = tempEfficiency;
+
+                        int tempChemical = chosenChemicals[leftPointer];
+                        chosenChemicals[leftPointer] = chosenChemicals[rightPointer];
+                        chosenChemicals[rightPointer] = tempChemical;
+                    }
+                }
+            }
+        }
+
+        // Checks to see if user enters int between a range of values
+        static int CheckInt(string question, int min, int max)
+        {
+            string ERROR_MSG = ("--------------------------------------------------\n" +
+                $"ERROR: Enter a valid number between {min} and {max}.\n"+
+                "--------------------------------------------------");
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine(question);
+
+                    int userInt = int.Parse(Console.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
+
+                    if (userInt >= min && userInt <= max)
+                    {
+                        return userInt;
+                    }
+                    else
+                    {
+                        Console.WriteLine(ERROR_MSG);
+                    }
+
+                }
+                catch
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(ERROR_MSG);
+                }
+
+            }
+        }
+            // Checking if chemical has been tested
+            
+        
+            static int validateChemical()
+        {
+            while (true)
+            {
+                Console.WriteLine("-----------------------------------------------------------\n" +
                 "Welcome to the chemical testing area. Please make a choice.\n" +
-                "----------------------------------------------------\n" +
+                "-----------------------------------------------------------\n" +
                 $"1. {CHEMICALNAMES[0]}\n" +
                 $"2. {CHEMICALNAMES[1]}\n" +
                 $"3. {CHEMICALNAMES[2]}\n" +
                 $"4. {CHEMICALNAMES[3]}\n");
 
-            Console.WriteLine("Enter chemical number.");
-            chosenChemicals.Add(Convert.ToInt32(Console.ReadLine())-1);
+                int chemicalIndex = CheckInt("Enter chemical number:", 1, 4) - 1;
+
+                if (chosenChemicals.Contains(chemicalIndex))
+                {
+                    Console.WriteLine("-----------------------------------------\n\n" +
+                        "This chemical has already been tested.\n");
+                }
+                else
+                {
+                    return chemicalIndex;
+                }
+            }
+            
+        }
+
+
+
+
+            // Tests the effiency of a chemical
+            // Component 2
+            static void ChemicalChoice()
+        {
+            
+
+            chosenChemicals.Add(validateChemical());
 
             decimal sumEfficiency = 0;
-            
-            
+
+
             for (int testCount = 1; testCount < 6; testCount++)
             {
                 // Displaying the name of the most recently added chemical from our chosen chemical list
-                Console.WriteLine($"-------- Test {testCount} : {CHEMICALNAMES[chosenChemicals[chosenChemicals.Count-1]]} --------\n");
+                Console.WriteLine($"-------- Test {testCount} : {CHEMICALNAMES[chosenChemicals[chosenChemicals.Count - 1]]} --------\n");
 
                 Random rndm = new Random();
 
                 int startGermCount = rndm.Next(1, 150);
 
-                Console.WriteLine($"Press <ENTER> to initiate test {testCount}.\n" +
-                    $"-----------------------------------------");
 
-                Console.ReadLine();
-                
-                int endGermCount = rndm.Next(0, startGermCount);
+                bool testFlag = true;
+                while (testFlag)
+                {
 
-                decimal chemicalEfficiency = (decimal)(startGermCount - endGermCount) / 30;
+                    Console.WriteLine($"Press <ENTER> to initiate test {testCount}.\n\n" +
+                        $"-----------------------------------------");
 
-                chemicalEfficiency = Math.Round(chemicalEfficiency, 3);
+                    string proceed = Console.ReadLine();
 
-                Console.WriteLine($"Chemical Efficiency " +
-                    $"for test {testCount}: {chemicalEfficiency}");
+                    if (proceed.Equals(""))
+                    {
+                        int endGermCount = rndm.Next(0, startGermCount);
 
-                sumEfficiency += chemicalEfficiency;
+                        decimal chemicalEfficiency = (decimal)(startGermCount - endGermCount) / 30;
 
+                        chemicalEfficiency = Math.Round(chemicalEfficiency, 3);
+
+                        Console.WriteLine($"Chemical Efficiency " +
+                            $"for test {testCount}: {chemicalEfficiency}\n");
+
+                        sumEfficiency += chemicalEfficiency;
+
+                        testFlag = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("----------------------------\n"+
+                            "Error: Please press <ENTER>\n"+
+                            "----------------------------   ");
+                    }
+                }
             }
 
-            decimal finalEfficientRating = sumEfficiency / 5;
-            finalEfficientRating = Math.Round(finalEfficientRating, 3);
+                decimal finalEfficientRating = sumEfficiency / 5;
+                chemicalEfficiencies.Add(Math.Round(finalEfficientRating, 3));
 
-            Console.WriteLine($"The final efficiency rating for {CHEMICALNAMES[chosenChemicals[chosenChemicals.Count-1]]} is {finalEfficientRating}");
+                Console.WriteLine($"The final efficiency rating for {CHEMICALNAMES[chosenChemicals[chosenChemicals.Count - 1]]} is {finalEfficientRating}");
+               
+            
+            
+            
+
+                
+               
 
         }
 
@@ -74,13 +178,22 @@ namespace ChemicalApp
             Console.WriteLine("------------------------------------------------------\n" +
                 "Welcome to the Hi-Jean chemical testing app!\n" +
                 "This app is used to test germ removel effectiveness\nof certain chemicals.\n" +
-                "------------------------------------------------------");
+                "To use the program you must follow these steps:\n" +
+                "1. Firstly press <ENTER> as instructed to start the program\n" +
+                "2. Then enter a number that corresponds with a chemical\n" +
+                "3. Then you must initiate a test by pressing the <Enter> key\n" +
+                "4. Repeat the testing 5 times.\n" +
+                "5. The end result is the chemical effeciency,\n   the lower the number, the more effective it is at neutralizing germs.\n" +
+                "-------------------------------------------------------------");
 
-            bool flag_main = true;
+            bool flagMain = true;
 
-            while (flag_main)
+            while (flagMain)
+
+
             {
-                Console.WriteLine("Press <Enter> to start an experiment, or type 'stop' to quit.");
+                Console.WriteLine("Press <Enter> to start an experiment, or type 'stop' to quit.\n"+
+                    "-------------------------------------------------------------");
 
                 string userChoice = Console.ReadLine();
                 if(userChoice.Equals("")) 
@@ -90,12 +203,19 @@ namespace ChemicalApp
                 }
                 else if(userChoice.Equals("stop"))
                 {
-                    flag_main = false;
+                    flagMain = false;
+
+                    EfficiencySortAsc();
+
+                    Console.WriteLine($"");
+
                     Console.WriteLine("Thank you for using the HI-Jean chemical testing app");
                 }
                 else
                 {
-                    Console.WriteLine("ERROR: Please enter a correct choice");
+                    Console.WriteLine("------------------------------------\n"+
+                        "ERROR: Please enter a correct choice\n"+
+                        "------------------------------------");
                 }
                 
 
