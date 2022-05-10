@@ -183,7 +183,7 @@ namespace ChemicalApp
                 "2. Then enter a number that corresponds with a chemical\n" +
                 "3. Then you must initiate a test by pressing the <Enter> key\n" +
                 "4. Repeat the testing 5 times.\n" +
-                "5. The end result is the chemical effeciency,\n   the lower the number, the more effective it is at neutralizing germs.\n" +
+                "5. The end result is the chemical effeciency,\n   THE LOWER THE NUMBER THE MORE EFFECTIVE IT IS AT NEUTRALIZING GERMS.\n" +
                 "-------------------------------------------------------------");
 
             bool flagMain = true;
@@ -196,18 +196,32 @@ namespace ChemicalApp
                     "-------------------------------------------------------------");
 
                 string userChoice = Console.ReadLine();
-                if(userChoice.Equals("")) 
+                if(userChoice.Equals("") && chosenChemicals.Count<CHEMICALNAMES.Count) 
                 {
                     ChemicalChoice();
                     Console.WriteLine("");
                 }
-                else if(userChoice.Equals("stop"))
+                else if(userChoice.Equals("stop") || chosenChemicals.Count == CHEMICALNAMES.Count)
                 {
+
+                    if (chosenChemicals.Count == CHEMICALNAMES.Count)
+                    {
+                        Console.WriteLine("You have tested all chemicals.\n"+
+                            "---------------------------------\n"+
+                            "LOWER VALUE MEANS MORE EFFECTIVE.\n"+
+                            "---------------------------------");
+                    }
                     flagMain = false;
 
                     EfficiencySortAsc();
 
-                    Console.WriteLine($"");
+
+                    Console.WriteLine("Most effective chemicals.\n");
+
+                    for (int chemIndex = 0; chemIndex < chosenChemicals.Count; chemIndex++)
+                    {
+                        Console.WriteLine($"{chemIndex +1}. {CHEMICALNAMES[chosenChemicals[chemIndex]]} {chemicalEfficiencies[chemIndex]}\n");
+                    }
 
                     Console.WriteLine("Thank you for using the HI-Jean chemical testing app");
                 }
